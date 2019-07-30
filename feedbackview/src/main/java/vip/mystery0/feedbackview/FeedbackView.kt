@@ -11,6 +11,11 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import vip.mystery0.feedbackview.model.BaseMessage
+import vip.mystery0.feedbackview.model.SystemMessage
+import vip.mystery0.feedbackview.utils.equalsDate
+import vip.mystery0.feedbackview.utils.toCalendar
+import vip.mystery0.feedbackview.utils.toDateTimeString
+import vip.mystery0.feedbackview.utils.toTimeString
 
 class FeedbackView : LinearLayout {
     private val TAG = "FeedbackView"
@@ -30,6 +35,7 @@ class FeedbackView : LinearLayout {
     init {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+        recyclerView.itemAnimator = null
         annexButton.setOnClickListener {
             Log.i(TAG, "点击了附件按钮")
         }
@@ -59,9 +65,6 @@ class FeedbackView : LinearLayout {
         sendListener!!(message)
     }
 
-    @Synchronized
-    fun lastMessageId(): Long = adapter.messageList.lastOrNull()?.id ?: -1
-
     fun addAllMessage(messageList: List<BaseMessage>, clearInput: Boolean = false) {
         val startIndex = adapter.messageList.size
         adapter.messageList.addAll(messageList)
@@ -71,6 +74,18 @@ class FeedbackView : LinearLayout {
     }
 
     fun addMessage(message: BaseMessage, clearInput: Boolean = true) {
+        val lastMessage = adapter.messageList.lastOrNull()
+        if (lastMessage == null) {
+            adapter.messageList.add(SystemMessage(message.time.toCalendar().toDateTimeString()))
+        } else if (message.time - lastMessage.time > 10 * 60 * 1000) {
+            val date = message.time.toCalendar()
+            val equalsDate = date.equalsDate(lastMessage.time.toCalendar())
+            if (equalsDate) {
+                adapter.messageList.add(SystemMessage(date.toTimeString()))
+            } else {
+                adapter.messageList.add(SystemMessage(date.toDateTimeString()))
+            }
+        }
         adapter.messageList.add(message)
         adapter.notifyItemInserted(adapter.messageList.lastIndex)
         if (clearInput)
@@ -78,7 +93,7 @@ class FeedbackView : LinearLayout {
     }
 
     fun updateMessage(message: BaseMessage, clearInput: Boolean = false) {
-        val msg = adapter.messageList.find { message.id == it.id }
+        val msg = adapter.messageList.find { message.time == it.time }
         if (msg == null) {
             Log.w(TAG, "消息不存在")
             return

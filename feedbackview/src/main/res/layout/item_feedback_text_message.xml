@@ -17,20 +17,27 @@
 
         <LinearLayout
                 android:id="@+id/receiveLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="start">
 
             <TextView
                     android:id="@+id/receiveTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:background="@drawable/drawable_shape_corner"
+                    android:backgroundTint="#673AB7"
+                    android:textColor="@android:color/white"
                     android:text="@{textMessage.text}"/>
 
             <ProgressBar
                     android:id="@+id/receiveProgressBar"
-                    android:visibility="gone"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_gravity="center_vertical"
@@ -40,10 +47,11 @@
 
         <LinearLayout
                 android:id="@+id/sendLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="end">
 
             <ProgressBar
                     android:id="@+id/sendProgressBar"
@@ -56,6 +64,13 @@
                     android:id="@+id/sendTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:background="@drawable/drawable_shape_corner"
+                    android:backgroundTint="#FF9800"
+                    android:textColor="@android:color/white"
                     android:text="@{textMessage.text}"/>
 
         </LinearLayout>

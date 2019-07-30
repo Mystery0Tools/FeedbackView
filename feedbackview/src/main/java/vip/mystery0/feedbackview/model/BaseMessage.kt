@@ -1,28 +1,25 @@
 package vip.mystery0.feedbackview.model
 
-import android.graphics.drawable.StateListDrawable
 import java.io.Serializable
+import java.util.*
 
 abstract class BaseMessage(
-    var id: Long,
     val messageType: MessageType,
     val type: Type,
-    var state: Boolean
-) :Serializable{
-    var drawable: StateListDrawable? = null
-
-    fun copyFrom(baseMessage: BaseMessage) {
-        this.id = baseMessage.id
+    var state: Boolean,
+    val time: Long = Calendar.getInstance().timeInMillis
+) : Serializable {
+    open fun copyFrom(baseMessage: BaseMessage) {
         this.state = baseMessage.state
-        this.drawable = baseMessage.drawable
     }
 }
 
 enum class MessageType {
-    SEND, RECEIVE
+    SEND, RECEIVE, SYSTEM
 }
 
 enum class Type(val code: Int) {
+    SYSTEM(0),
     TEXT(1),
     IMAGE(2),
     FILE(3);

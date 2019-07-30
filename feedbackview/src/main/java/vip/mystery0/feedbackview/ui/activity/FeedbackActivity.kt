@@ -31,14 +31,12 @@ class FeedbackActivity : AppCompatActivity() {
 
     private val addMessageObserver = Observer<Pair3<String, BaseMessage, Boolean>> {
         feedbackViewModel.map[it.first] = it.second
-        it.second.id = getNextId()
         feedbackView.addMessage(it.second, it.third)
         feedbackView.scrollToBottom()
     }
 
     private val updateMessageObserver = Observer<Pair3<String, BaseMessage, Boolean>> {
         val save = feedbackViewModel.map[it.first] ?: return@Observer
-        it.second.id = save.id
         save.copyFrom(it.second)
         feedbackView.updateMessage(save, it.third)
         feedbackViewModel.map.remove(it.first)
@@ -58,8 +56,6 @@ class FeedbackActivity : AppCompatActivity() {
             FeedbackViewHelper.instance.messageSendListener?.onSend(key, message)
         }
     }
-
-    private fun getNextId(): Long = feedbackView.lastMessageId() + 1
 
     override fun onDestroy() {
         MessageViewModel.addMessage.removeObserver(addMessageObserver)

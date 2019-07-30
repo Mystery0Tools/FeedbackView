@@ -1,5 +1,7 @@
 package vip.mystery0.feedbackview.demo
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import vip.mystery0.feedbackview.FeedbackViewHelper
@@ -20,9 +22,9 @@ class MainActivity : AppCompatActivity() {
                 Thread {
                     Thread.sleep(Random.nextLong(2000, 5000))
                     baseMessage.state = true
-                    if(baseMessage.type==Type.TEXT){
-                        val text=baseMessage as TextMessage
-                        text.text="模拟修改消息，原文是：「${text.text}」"
+                    if (baseMessage.type == Type.TEXT) {
+                        val text = baseMessage as TextMessage
+                        text.text = "模拟修改消息，原文是：「${text.text}」"
                     }
                     FeedbackViewHelper.instance.update(key, baseMessage)
                 }.start()

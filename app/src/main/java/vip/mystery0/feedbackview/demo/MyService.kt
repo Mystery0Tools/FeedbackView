@@ -14,7 +14,6 @@ class MyService : Service() {
     override fun onCreate() {
         super.onCreate()
         Thread {
-            Thread.sleep(5000)
             (0..5).forEach {
                 val message = TextMessage.receive("模拟接收到的消息，时间：${Date().toLocaleString()}，编号：$it")
                 val key = FeedbackViewHelper.instance.add(message, clearInput = false)
