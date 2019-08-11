@@ -1,15 +1,13 @@
 package vip.mystery0.feedbackview.ui
 
-import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
-import vip.mystery0.feedbackview.utils.dp2px
+import vip.mystery0.tools.utils.dp2px
 import java.util.*
 
 class SoftKeyboardStateWatcher(
-    private val activityRootView: View,
-    private val context: Context
+    private val activityRootView: View
 ) : ViewTreeObserver.OnGlobalLayoutListener {
     private val listeners = LinkedList<SoftKeyboardStateListener>()
     private var isSoftKeyboardOpened = false
@@ -35,10 +33,10 @@ class SoftKeyboardStateWatcher(
         //r will be populated with the coordinates of your view that area still visible.
         activityRootView.getWindowVisibleDisplayFrame(r)
         val heightDiff = activityRootView.rootView.height - (r.bottom - r.top)
-        if (!isSoftKeyboardOpened && heightDiff > context.dp2px(200f)) { // if more than 100 pixels, its probably a keyboard...
+        if (!isSoftKeyboardOpened && heightDiff > dp2px(200f)) { // if more than 100 pixels, its probably a keyboard...
             isSoftKeyboardOpened = true
             notifyOnSoftKeyboardOpened(heightDiff)
-        } else if (isSoftKeyboardOpened && heightDiff < context.dp2px(200f)) {
+        } else if (isSoftKeyboardOpened && heightDiff < dp2px(200f)) {
             isSoftKeyboardOpened = false
             notifyOnSoftKeyboardClosed()
         }

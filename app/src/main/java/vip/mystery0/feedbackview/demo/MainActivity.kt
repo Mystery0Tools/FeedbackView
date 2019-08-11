@@ -5,10 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import vip.mystery0.feedbackview.helper.FeedbackViewHelper
+import vip.mystery0.feedbackview.listener.DoDownloadListener
+import vip.mystery0.feedbackview.listener.DoUploadListener
 import vip.mystery0.feedbackview.listener.MessageSendListener
-import vip.mystery0.feedbackview.model.BaseMessage
-import vip.mystery0.feedbackview.model.TextMessage
-import vip.mystery0.feedbackview.model.Type
+import vip.mystery0.feedbackview.model.*
+import java.io.File
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +29,24 @@ class MainActivity : AppCompatActivity() {
                     }
                     FeedbackViewHelper.instance.update(key, baseMessage)
                 }.start()
+            }
+        }
+        FeedbackViewHelper.instance.doUploadListener = object : DoUploadListener {
+            override fun doUpload(file: File, info: UploadInfo): String {
+                var progres = 0
+                while (progres < 100) {
+                    info.imageMessage.progress = progres
+                    FeedbackViewHelper.instance.updateProgress(info)
+                    Thread.sleep(500)
+                    progres += 10
+                }
+                Thread.sleep(100)
+                return "https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiC_YG7n_rjAhWEQN4KHcvoCWsQjRx6BAgBEAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FTerra_Ceia%2C_Florida&psig=AOvVaw3_1EWy9eqOmFeEr1tx23bX&ust=1565593243377080"
+            }
+        }
+        FeedbackViewHelper.instance.doDownloadListener = object : DoDownloadListener {
+            override fun doDownload(url: String, localFile: File, info: DownloadInfo) {
+
             }
         }
         button.setOnClickListener {

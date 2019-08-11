@@ -1,7 +1,8 @@
 package vip.mystery0.feedbackview.model
 
+import android.net.Uri
 import vip.mystery0.feedbackview.helper.FeedbackViewHelper
-import vip.mystery0.feedbackview.utils.sha256
+import vip.mystery0.tools.utils.sha256
 import java.io.File
 
 class ImageMessage(type: MessageType, state: Boolean) : BaseMessage(type, Type.IMAGE, state) {
@@ -21,5 +22,11 @@ class ImageMessage(type: MessageType, state: Boolean) : BaseMessage(type, Type.I
 
     companion object {
         private val LOCAL_DIR = File(FeedbackViewHelper.instance.context!!.externalCacheDir, "image")
+
+        fun getLocalFileFromUri(uri: Uri): File {
+            val fileName = uri.toString().sha256()
+            val file = File(LOCAL_DIR, fileName)
+            return file
+        }
     }
 }

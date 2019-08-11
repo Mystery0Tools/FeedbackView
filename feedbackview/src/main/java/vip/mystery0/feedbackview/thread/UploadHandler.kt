@@ -19,7 +19,7 @@ class UploadHandler(looper: Looper) : Handler(looper) {
         }
         val info = msg.obj as UploadInfo
         try {
-            val url = FeedbackViewHelper.instance.doUploadListener?.doUpload(info.localFile)
+            val url = FeedbackViewHelper.instance.doUploadListener?.doUpload(info.localFile, info)
             info.remoteUrl = url
         } catch (e: Exception) {
             e.printStackTrace()
@@ -33,9 +33,5 @@ class UploadHandler(looper: Looper) : Handler(looper) {
         message.what = UPLOAD_TYPE
         message.obj = uploadInfo
         sendMessage(message)
-    }
-
-    fun updateProgress(uploadInfo: UploadInfo){
-        InternalHelper.updateProgress(uploadInfo)
     }
 }

@@ -1,12 +1,14 @@
 package vip.mystery0.feedbackview.helper
 
 import android.os.HandlerThread
+import android.util.Log
 import vip.mystery0.feedbackview.model.DownloadInfo
 import vip.mystery0.feedbackview.model.UploadInfo
 import vip.mystery0.feedbackview.thread.DownloadHandler
 import vip.mystery0.feedbackview.thread.UploadHandler
 
 object InternalHelper {
+    private val TAG = "InternalHelper"
     private var uploadThread: HandlerThread? = null
     private var downloadThread: HandlerThread? = null
     var uploadHandler: UploadHandler? = null
@@ -30,7 +32,7 @@ object InternalHelper {
         message.imageUrl = uploadInfo.remoteUrl
         message.progress = 100
         message.state = true
-        FeedbackViewHelper.instance.update(uploadInfo.key, message, false)
+        FeedbackViewHelper.instance.update(uploadInfo.key, message, true)
     }
 
     fun downloadFileDone(downloadInfo: DownloadInfo) {
@@ -38,17 +40,7 @@ object InternalHelper {
         message.localFile = downloadInfo.localFile
         message.progress = 100
         message.state = true
-        FeedbackViewHelper.instance.update(downloadInfo.key, message, false)
-    }
-
-    fun updateProgress(uploadInfo: UploadInfo) {
-        val message = uploadInfo.imageMessage
-        FeedbackViewHelper.instance.update(uploadInfo.key, message, false)
-    }
-
-    fun updateProgress(downloadInfo: DownloadInfo) {
-        val message = downloadInfo.imageMessage
-        FeedbackViewHelper.instance.update(downloadInfo.key, message, false)
+        FeedbackViewHelper.instance.update(downloadInfo.key, message, true)
     }
 
     fun close() {

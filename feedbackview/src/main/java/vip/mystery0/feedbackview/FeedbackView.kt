@@ -10,12 +10,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import vip.mystery0.feedbackview.helper.FeedbackViewHelper
 import vip.mystery0.feedbackview.model.BaseMessage
 import vip.mystery0.feedbackview.model.SystemMessage
-import vip.mystery0.feedbackview.utils.equalsDate
-import vip.mystery0.feedbackview.utils.toCalendar
-import vip.mystery0.feedbackview.utils.toDateTimeString
-import vip.mystery0.feedbackview.utils.toTimeString
+import vip.mystery0.tools.utils.equalsDate
+import vip.mystery0.tools.utils.toDateTimeString
+import vip.mystery0.tools.utils.toCalendar
+import vip.mystery0.tools.utils.toTimeString
 
 class FeedbackView : LinearLayout {
     private val TAG = "FeedbackView"
@@ -38,6 +39,7 @@ class FeedbackView : LinearLayout {
         recyclerView.itemAnimator = null
         annexButton.setOnClickListener {
             Log.i(TAG, "点击了附件按钮")
+            FeedbackViewHelper.instance.doSelectListener?.selectImage()
         }
         sendButton.setOnClickListener {
             doSend()

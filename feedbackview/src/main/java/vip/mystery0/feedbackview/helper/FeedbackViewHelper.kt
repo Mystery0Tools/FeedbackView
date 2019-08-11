@@ -2,28 +2,36 @@ package vip.mystery0.feedbackview.helper
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import vip.mystery0.feedbackview.listener.DoDownloadListener
+import vip.mystery0.feedbackview.listener.DoSelectListener
 import vip.mystery0.feedbackview.listener.DoUploadListener
 import vip.mystery0.feedbackview.listener.MessageSendListener
 import vip.mystery0.feedbackview.model.*
 import vip.mystery0.feedbackview.ui.activity.FeedbackActivity
-import vip.mystery0.feedbackview.utils.Pair3
-import vip.mystery0.feedbackview.utils.sha256
 import vip.mystery0.feedbackview.viewModel.MessageViewModel
+import vip.mystery0.tools.ToolsClient
+import vip.mystery0.tools.model.Pair3
+import vip.mystery0.tools.utils.FileTools
+import vip.mystery0.tools.utils.sha256
 import java.util.*
 
 class FeedbackViewHelper private constructor() {
+    private val TAG = "FeedbackViewHelper"
     var context: Context? = null
         private set
 
     var messageSendListener: MessageSendListener? = null
     var doUploadListener: DoUploadListener? = null
     var doDownloadListener: DoDownloadListener? = null
+    var doSelectListener: DoSelectListener? = null
 
     companion object {
         val instance by lazy { FeedbackViewHelper() }
 
         fun init(context: Context) {
+            ToolsClient.initWithContext(context)
             instance.context = context
         }
     }
@@ -48,8 +56,37 @@ class FeedbackViewHelper private constructor() {
         return key
     }
 
-    fun update(key: String, baseMessage: BaseMessage, clearInput: Boolean = false) {
-        MessageViewModel.updateMessage.postValue(Pair3(key, baseMessage, clearInput))
+    fun update(key: String, baseMessage: BaseMessage, noUpdate: Boolean = false) {
+        MessageViewModel.updateMessage.postValue(Pair3(key, baseMessage, noUpdate))
+    }
+
+    /**
+     * 自定义图片选择的Uri接收
+     */
+    fun receiveImageUri(uri: Uri) {
+        val file = ImageMessage.getLocalFileFromUri(uri)
+        FileTools.instance.cloneUriToFile(context!!, uri, file)
+        val imageMessage = ImageMessage(MessageType.SEND, false)
+        imageMessage.localFile = file
+        add(imageMessage)
+    }
+
+    /**
+     * 自定义文件选择的Uri接收
+     */
+    fun receiveFileUri(uri: Uri) {
+
+    }
+
+    fun updateProgress(uploadInfo: UploadInfo) {
+        Log.i(TAG, "更新进度${uploadInfo.imageMessage.progress}")
+        val message = uploadInfo.imageMessage
+        update(uploadInfo.key, message, false)
+    }
+
+    fun updateProgress(downloadInfo: DownloadInfo) {
+        val message = downloadInfo.imageMessage
+        update(downloadInfo.key, message, false)
     }
 
     fun clear() {

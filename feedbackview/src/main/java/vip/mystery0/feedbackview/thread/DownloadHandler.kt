@@ -20,7 +20,7 @@ class DownloadHandler(looper: Looper) : Handler(looper) {
         val info = msg.obj as DownloadInfo
         try {
             val local = info.imageMessage.getLocalFileFromName()
-            FeedbackViewHelper.instance.doDownloadListener?.doDownload(info.remoteUrl, local)
+            FeedbackViewHelper.instance.doDownloadListener?.doDownload(info.remoteUrl, local, info)
             info.localFile = local
         } catch (e: Exception) {
             e.printStackTrace()
@@ -34,9 +34,5 @@ class DownloadHandler(looper: Looper) : Handler(looper) {
         message.what = UPLOAD_TYPE
         message.obj = downloadInfo
         sendMessage(message)
-    }
-
-    fun updateProgress(downloadInfo: DownloadInfo) {
-        InternalHelper.updateProgress(downloadInfo)
     }
 }
