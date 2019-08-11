@@ -3,7 +3,7 @@ package vip.mystery0.feedbackview.demo
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import vip.mystery0.feedbackview.FeedbackViewHelper
+import vip.mystery0.feedbackview.helper.FeedbackViewHelper
 import vip.mystery0.feedbackview.model.TextMessage
 import java.util.*
 

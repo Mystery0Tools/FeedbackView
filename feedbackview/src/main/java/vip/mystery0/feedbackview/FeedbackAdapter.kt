@@ -1,6 +1,7 @@
 package vip.mystery0.feedbackview
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +12,11 @@ import vip.mystery0.feedbackview.databinding.ItemFeedbackImageMessageBinding
 import vip.mystery0.feedbackview.databinding.ItemFeedbackSystemMessageBinding
 import vip.mystery0.feedbackview.databinding.ItemFeedbackTextMessageBinding
 import vip.mystery0.feedbackview.model.*
-import vip.mystery0.feedbackview.utils.changeLayoutParams
 import vip.mystery0.feedbackview.utils.getScreenWidth
 import kotlin.math.roundToInt
 
 class FeedbackAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val TAG = "FeedbackAdapter"
     private val maxWidth: Int = (context.getScreenWidth() * 0.7).roundToInt()
 
     private val glide = Glide.with(context)
@@ -84,14 +85,44 @@ class FeedbackAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.View
                     MessageType.SEND -> {
                         binding.sendLayout.visibility = View.VISIBLE
                         binding.receiveLayout.visibility = View.GONE
-                        binding.sendProgressBar.visibility = if (imageMessage.state) View.GONE else View.VISIBLE
-                        glide.load(imageMessage.imageUrl).into(binding.sendImageView)
+                        //判断发送是否完成
+                        if (imageMessage.state) {
+                            //发送步骤完成
+                            binding.sendProgressBar.visibility = View.GONE
+                            if (imageMessage.error != null) {
+                                //出现错误
+                                Log.w(TAG, imageMessage.error!!)
+                                //显示错误的图标
+                            } else {
+                                //未出现错误
+                                glide.load(imageMessage.localFile).into(binding.sendImageView)
+                            }
+                        } else {
+                            //发送步骤未完成
+                            binding.sendProgressBar.visibility = View.VISIBLE
+                            binding.sendProgressBar.progress = imageMessage.progress
+                        }
                     }
                     MessageType.RECEIVE -> {
                         binding.sendLayout.visibility = View.GONE
                         binding.receiveLayout.visibility = View.VISIBLE
-                        binding.receiveProgressBar.visibility = if (imageMessage.state) View.GONE else View.VISIBLE
-                        glide.load(imageMessage.imageUrl).into(binding.receiveImageView)
+                        //判断接收是否完成
+                        if (imageMessage.state) {
+                            //接收步骤完成
+                            binding.receiveProgressBar.visibility = View.GONE
+                            if (imageMessage.error != null) {
+                                //出现错误
+                                Log.w(TAG, imageMessage.error!!)
+                                //显示错误的图标
+                            } else {
+                                //未出现错误
+                                glide.load(imageMessage.localFile).into(binding.sendImageView)
+                            }
+                        } else {
+                            //接收步骤未完成
+                            binding.receiveProgressBar.visibility = View.VISIBLE
+                            binding.receiveProgressBar.progress = imageMessage.progress
+                        }
                     }
                     else -> {
                     }

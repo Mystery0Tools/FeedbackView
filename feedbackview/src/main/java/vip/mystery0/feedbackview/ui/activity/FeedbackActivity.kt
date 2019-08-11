@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_feedback.*
-import vip.mystery0.feedbackview.FeedbackViewHelper
+import vip.mystery0.feedbackview.helper.FeedbackViewHelper
 import vip.mystery0.feedbackview.R
 import vip.mystery0.feedbackview.model.BaseMessage
 import vip.mystery0.feedbackview.model.TextMessage

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import vip.mystery0.feedbackview.FeedbackViewHelper
+import vip.mystery0.feedbackview.helper.FeedbackViewHelper
 import vip.mystery0.feedbackview.listener.MessageSendListener
 import vip.mystery0.feedbackview.model.BaseMessage
 import vip.mystery0.feedbackview.model.TextMessage
