@@ -42,3 +42,6 @@ dependencies {
     //Tools
     implementation 'vip.mystery0.tools:tools:2.0.4'
 }
+
+// 在底部加上这句
+apply from: '../push.gradle'
