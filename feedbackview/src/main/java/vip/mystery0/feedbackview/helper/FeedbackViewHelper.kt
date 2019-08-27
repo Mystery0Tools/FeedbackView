@@ -3,7 +3,6 @@ package vip.mystery0.feedbackview.helper
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import vip.mystery0.feedbackview.listener.DoDownloadListener
 import vip.mystery0.feedbackview.listener.DoSelectListener
 import vip.mystery0.feedbackview.listener.DoUploadListener
@@ -18,7 +17,6 @@ import vip.mystery0.tools.utils.sha256
 import java.util.*
 
 class FeedbackViewHelper private constructor() {
-    private val TAG = "FeedbackViewHelper"
     var context: Context? = null
         private set
 
@@ -75,11 +73,14 @@ class FeedbackViewHelper private constructor() {
      * 自定义文件选择的Uri接收
      */
     fun receiveFileUri(uri: Uri) {
-
+        val file = ImageMessage.getLocalFileFromUri(uri)
+        FileTools.instance.cloneUriToFile(context!!, uri, file)
+        val fileMessage = FileMessage(MessageType.SEND, false)
+        fileMessage.localFile = file
+        add(fileMessage)
     }
 
     fun updateProgress(uploadInfo: UploadInfo) {
-        Log.i(TAG, "更新进度${uploadInfo.imageMessage.progress}")
         val message = uploadInfo.imageMessage
         update(uploadInfo.key, message, false)
     }

@@ -67,6 +67,10 @@ class FeedbackActivity : AppCompatActivity() {
             }
 
             override fun selectFile() {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "*/*"
+                startActivityForResult(intent, IMAGE_SELECT_CODE)
             }
         }
         feedbackView.onSendListener {

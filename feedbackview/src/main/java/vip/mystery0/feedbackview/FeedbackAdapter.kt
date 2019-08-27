@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import vip.mystery0.feedbackview.databinding.ItemFeedbackFileMessageBinding
 import vip.mystery0.feedbackview.databinding.ItemFeedbackImageMessageBinding
 import vip.mystery0.feedbackview.databinding.ItemFeedbackSystemMessageBinding
 import vip.mystery0.feedbackview.databinding.ItemFeedbackTextMessageBinding
@@ -49,6 +50,10 @@ class FeedbackAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.View
             Type.IMAGE.code -> {
                 val binding = DataBindingUtil.inflate<ItemFeedbackImageMessageBinding>(layoutInflater, R.layout.item_feedback_image_message, parent, false)
                 ImageViewHolder(binding.root)
+            }
+            Type.FILE.code -> {
+                val binding = DataBindingUtil.inflate<ItemFeedbackFileMessageBinding>(layoutInflater, R.layout.item_feedback_file_message, parent, false)
+                FileViewHolder(binding.root)
             }
             else -> throw Exception("类型错误")
         }
@@ -141,6 +146,51 @@ class FeedbackAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.View
                     }
                 }
             }
+            is FileViewHolder -> {
+                val fileMessage = message as FileMessage
+                Log.i(TAG, "update: ${fileMessage.progress}")
+                val binding = DataBindingUtil.getBinding<ItemFeedbackFileMessageBinding>(holder.itemView)!!
+                when (fileMessage.messageType) {
+                    MessageType.SEND -> {
+                        binding.sendLayout.visibility = View.VISIBLE
+                        binding.receiveLayout.visibility = View.GONE
+                        //判断发送是否完成
+                        if (fileMessage.state) {
+                            //发送步骤完成
+                            binding.sendProgressBar.visibility = View.GONE
+                            if (fileMessage.error != null) {
+                                //出现错误
+                                Log.w(TAG, fileMessage.error!!)
+                                //显示错误的图标
+                            }
+                        } else {
+                            //发送步骤未完成
+                            binding.sendProgressBar.visibility = View.VISIBLE
+                            binding.sendProgressBar.progress = fileMessage.progress
+                        }
+                    }
+                    MessageType.RECEIVE -> {
+                        binding.sendLayout.visibility = View.GONE
+                        binding.receiveLayout.visibility = View.VISIBLE
+                        //判断接收是否完成
+                        if (fileMessage.state) {
+                            //接收步骤完成
+                            binding.receiveProgressBar.visibility = View.GONE
+                            if (fileMessage.error != null) {
+                                //出现错误
+                                Log.w(TAG, fileMessage.error!!)
+                                //显示错误的图标
+                            }
+                        } else {
+                            //接收步骤未完成
+                            binding.receiveProgressBar.visibility = View.VISIBLE
+                            binding.receiveProgressBar.progress = fileMessage.progress
+                        }
+                    }
+                    else -> {
+                    }
+                }
+            }
         }
     }
 
@@ -149,6 +199,8 @@ class FeedbackAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.View
     class TextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    class FileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private fun getImageSize(file: File): Array<Int> {
         val key = file.absolutePath.sha1()

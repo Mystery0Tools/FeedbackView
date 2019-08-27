@@ -8,14 +8,15 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import vip.mystery0.feedbackview.helper.FeedbackViewHelper
 import vip.mystery0.feedbackview.model.BaseMessage
 import vip.mystery0.feedbackview.model.SystemMessage
 import vip.mystery0.tools.utils.equalsDate
-import vip.mystery0.tools.utils.toDateTimeString
 import vip.mystery0.tools.utils.toCalendar
+import vip.mystery0.tools.utils.toDateTimeString
 import vip.mystery0.tools.utils.toTimeString
 
 class FeedbackView : LinearLayout {
@@ -38,8 +39,14 @@ class FeedbackView : LinearLayout {
         recyclerView.adapter = adapter
         recyclerView.itemAnimator = null
         annexButton.setOnClickListener {
-            Log.i(TAG, "点击了附件按钮")
-            FeedbackViewHelper.instance.doSelectListener?.selectImage()
+            AlertDialog.Builder(context)
+                .setTitle("请选择操作")
+                .setItems(arrayOf("上传图片", "上传文件")) { _, which ->
+                    when (which) {
+                        0 -> FeedbackViewHelper.instance.doSelectListener?.selectImage()
+                        1 -> FeedbackViewHelper.instance.doSelectListener?.selectFile()
+                    }
+                }
         }
         sendButton.setOnClickListener {
             doSend()

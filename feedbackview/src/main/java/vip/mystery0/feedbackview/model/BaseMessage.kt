@@ -9,6 +9,7 @@ abstract class BaseMessage(
     var state: Boolean,
     val time: Long = Calendar.getInstance().timeInMillis
 ) : Serializable {
+    var extraData: Any? = null
     var error: String? = null
 
     open fun copyFrom(baseMessage: BaseMessage) {
