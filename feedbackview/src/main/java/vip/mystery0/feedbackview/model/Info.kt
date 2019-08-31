@@ -4,16 +4,18 @@ import java.io.File
 
 data class UploadInfo(
     val key: String,
-    var imageMessage: ImageMessage,
+    var baseMessage: BaseMessage,
     var localFile: File,
-    var remoteUrl: String? = null,
-    var error: String? = null
-)
+    var remoteUrl: String? = null
+) {
+    var progress = 0
+}
 
 data class DownloadInfo(
     val key: String,
-    var imageMessage: ImageMessage,
+    var baseMessage: BaseMessage,
     var remoteUrl: String,
-    var localFile: File? = null,
-    var error: String? = null
-)
+    var localFile: File? = null
+){
+    var progress = 0
+}
