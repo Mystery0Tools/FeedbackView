@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         FeedbackViewHelper.init(this)
         FeedbackViewHelper.instance.messageSendListener = object : MessageSendListener {
-            override fun onSend(key: String, baseMessage: BaseMessage) {
+            override fun onSend(baseMessage: BaseMessage) {
                 Thread {
                     Thread.sleep(Random.nextLong(2000, 5000))
                     baseMessage.state = true
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                         val text = baseMessage as TextMessage
                         text.text = "模拟修改消息，原文是：「${text.text}」"
                     }
-                    FeedbackViewHelper.instance.update(key, baseMessage)
+                    FeedbackViewHelper.instance.update(baseMessage)
                 }.start()
             }
         }
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             override fun doUpload(file: File, info: UploadInfo): String {
 //                throw Exception("error")
                 var progress = 0
-                while (progress < 80) {
+                while (progress < 100) {
                     info.progress = progress
                     FeedbackViewHelper.instance.updateProgress(info)
                     Thread.sleep(500)

@@ -9,12 +9,10 @@ import vip.mystery0.feedbackview.listener.DoUploadListener
 import vip.mystery0.feedbackview.listener.MessageSendListener
 import vip.mystery0.feedbackview.model.*
 import vip.mystery0.feedbackview.ui.activity.FeedbackActivity
-import vip.mystery0.feedbackview.viewModel.MessageViewModel
+import vip.mystery0.feedbackview.ui.activity.postAdd
+import vip.mystery0.feedbackview.ui.activity.postUpdate
 import vip.mystery0.tools.ToolsClient
-import vip.mystery0.tools.model.Pair3
 import vip.mystery0.tools.utils.FileTools
-import vip.mystery0.tools.utils.sha256
-import java.util.*
 
 class FeedbackViewHelper private constructor() {
     var context: Context? = null
@@ -40,22 +38,20 @@ class FeedbackViewHelper private constructor() {
         context?.startActivity(intent)
     }
 
-    fun add(baseMessage: BaseMessage, clearInput: Boolean = false): String {
-        val key = Calendar.getInstance().time.toString().sha256()
-        MessageViewModel.addMessage.postValue(Pair3(key, baseMessage, clearInput))
+    fun add(baseMessage: BaseMessage, clearInput: Boolean = false) {
+        EventBusMessageBean(baseMessage, clearInput).postAdd()
         if (baseMessage is ImageMessage) {
             when (baseMessage.messageType) {
-                MessageType.RECEIVE -> InternalHelper.downloadHandler!!.addDownloadInfo(DownloadInfo(key, baseMessage, baseMessage.imageUrl!!))
-                MessageType.SEND -> InternalHelper.uploadHandler!!.addUploadInfo((UploadInfo(key, baseMessage, baseMessage.localFile!!)))
+                MessageType.RECEIVE -> InternalHelper.downloadHandler!!.addDownloadInfo(DownloadInfo(baseMessage, baseMessage.imageUrl!!))
+                MessageType.SEND -> InternalHelper.uploadHandler!!.addUploadInfo((UploadInfo(baseMessage, baseMessage.localFile!!)))
                 else -> {
                 }
             }
         }
-        return key
     }
 
-    fun update(key: String, baseMessage: BaseMessage, noUpdate: Boolean = false) {
-        MessageViewModel.updateMessage.postValue(Pair3(key, baseMessage, noUpdate))
+    fun update(baseMessage: BaseMessage) {
+        EventBusMessageBean(baseMessage, false).postUpdate()
     }
 
     /**
@@ -86,7 +82,7 @@ class FeedbackViewHelper private constructor() {
             is ImageMessage -> message.progress = uploadInfo.progress
             is FileMessage -> message.progress = uploadInfo.progress
         }
-        update(uploadInfo.key, message, false)
+        update(message)
     }
 
     fun updateProgress(downloadInfo: DownloadInfo) {
@@ -95,7 +91,7 @@ class FeedbackViewHelper private constructor() {
             is ImageMessage -> message.progress = downloadInfo.progress
             is FileMessage -> message.progress = downloadInfo.progress
         }
-        update(downloadInfo.key, message, false)
+        update(message)
     }
 
     fun clear() {

@@ -1,5 +1,6 @@
 package vip.mystery0.feedbackview.model
 
+import vip.mystery0.tools.utils.sha1
 import java.io.Serializable
 import java.util.*
 
@@ -9,6 +10,7 @@ abstract class BaseMessage(
     var state: Boolean,
     val time: Long = Calendar.getInstance().timeInMillis
 ) : Serializable {
+    val id = time.toString().sha1()
     var extraData: Any? = null
     var error: String? = null
 

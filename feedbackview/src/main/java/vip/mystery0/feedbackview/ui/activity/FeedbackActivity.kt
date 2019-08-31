@@ -6,19 +6,22 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import com.jeremyliao.liveeventbus.LiveEventBus
+import com.jeremyliao.liveeventbus.core.Observable
 import kotlinx.android.synthetic.main.activity_feedback.*
 import vip.mystery0.feedbackview.R
 import vip.mystery0.feedbackview.helper.FeedbackViewHelper
 import vip.mystery0.feedbackview.listener.DoSelectListener
-import vip.mystery0.feedbackview.model.BaseMessage
+import vip.mystery0.feedbackview.model.EVENT_BUS_MESSAGE_ADD
+import vip.mystery0.feedbackview.model.EVENT_BUS_MESSAGE_UPDATE
+import vip.mystery0.feedbackview.model.EventBusMessageBean
 import vip.mystery0.feedbackview.model.TextMessage
 import vip.mystery0.feedbackview.ui.SoftKeyboardStateWatcher
-import vip.mystery0.feedbackview.viewModel.FeedbackViewModel
-import vip.mystery0.feedbackview.viewModel.MessageViewModel
-import vip.mystery0.tools.model.Pair3
-import vip.mystery0.tools.utils.sha256
-import java.util.*
+
+fun eventBusMessageAdd(): Observable<EventBusMessageBean> = LiveEventBus.get(EVENT_BUS_MESSAGE_ADD, EventBusMessageBean::class.java)
+fun eventBusMessageUpdate(): Observable<EventBusMessageBean> = LiveEventBus.get(EVENT_BUS_MESSAGE_UPDATE, EventBusMessageBean::class.java)
+fun EventBusMessageBean.postAdd() = eventBusMessageAdd().post(this)
+fun EventBusMessageBean.postUpdate() = eventBusMessageUpdate().post(this)
 
 class FeedbackActivity : AppCompatActivity() {
     companion object {
@@ -26,7 +29,6 @@ class FeedbackActivity : AppCompatActivity() {
         private const val FILE_SELECT_CODE = 22
     }
 
-    private val feedbackViewModel: FeedbackViewModel by lazy { ViewModelProvider(this)[FeedbackViewModel::class.java] }
     private lateinit var watcher: SoftKeyboardStateWatcher
     private val listener = object : SoftKeyboardStateWatcher.SoftKeyboardStateListener {
         override fun onSoftKeyboardOpened(keyboardHeightInPx: Int) {
@@ -38,25 +40,20 @@ class FeedbackActivity : AppCompatActivity() {
         }
     }
 
-    private val addMessageObserver = Observer<Pair3<String, BaseMessage, Boolean>> {
-        feedbackViewModel.map[it.first] = it.second
-        feedbackView.addMessage(it.second, it.third)
+    private val addMessageObserver = Observer<EventBusMessageBean> {
+        feedbackView.addMessage(it.message, it.clearInput)
         feedbackView.scrollToBottom()
     }
 
-    private val updateMessageObserver = Observer<Pair3<String, BaseMessage, Boolean>> {
-        val save = feedbackViewModel.map[it.first] ?: return@Observer
-        save.copyFrom(it.second)
-        feedbackView.updateMessage(save)
-        if (it.third)
-            feedbackViewModel.map.remove(it.first)
+    private val updateMessageObserver = Observer<EventBusMessageBean> {
+        feedbackView.updateMessage(it.message)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
-        MessageViewModel.addMessage.observeForever(addMessageObserver)
-        MessageViewModel.updateMessage.observeForever(updateMessageObserver)
+        eventBusMessageAdd().observe(this, addMessageObserver)
+        eventBusMessageUpdate().observe(this, updateMessageObserver)
         watcher = SoftKeyboardStateWatcher(feedbackView)
         watcher.addSoftKeyboardStateListener(listener)
         FeedbackViewHelper.instance.doSelectListener = object : DoSelectListener {
@@ -74,10 +71,9 @@ class FeedbackActivity : AppCompatActivity() {
             }
         }
         feedbackView.onSendListener {
-            val key = Calendar.getInstance().timeInMillis.toString().sha256()
             val message = TextMessage.send(it)
-            MessageViewModel.addMessage.postValue(Pair3(key, message, true))
-            FeedbackViewHelper.instance.messageSendListener?.onSend(key, message)
+            EventBusMessageBean(message, true).postAdd()
+            FeedbackViewHelper.instance.messageSendListener?.onSend( message)
         }
     }
 
@@ -98,8 +94,6 @@ class FeedbackActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        MessageViewModel.addMessage.removeObserver(addMessageObserver)
-        MessageViewModel.updateMessage.removeObserver(updateMessageObserver)
         watcher.removeSoftKeyboardStateListener(listener)
         super.onDestroy()
     }

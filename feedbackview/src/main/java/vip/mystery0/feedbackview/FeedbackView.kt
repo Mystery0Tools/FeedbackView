@@ -103,7 +103,7 @@ class FeedbackView : LinearLayout {
     }
 
     fun updateMessage(message: BaseMessage, clearInput: Boolean = false) {
-        val msg = adapter.messageList.find { message.time == it.time }
+        val msg = adapter.messageList.find { message.id == it.id }
         if (msg == null) {
             Log.w(TAG, "消息不存在")
             return

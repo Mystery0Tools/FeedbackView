@@ -3,7 +3,6 @@ package vip.mystery0.feedbackview.model
 import java.io.File
 
 data class UploadInfo(
-    val key: String,
     var baseMessage: BaseMessage,
     var localFile: File,
     var remoteUrl: String? = null
@@ -12,7 +11,6 @@ data class UploadInfo(
 }
 
 data class DownloadInfo(
-    val key: String,
     var baseMessage: BaseMessage,
     var remoteUrl: String,
     var localFile: File? = null

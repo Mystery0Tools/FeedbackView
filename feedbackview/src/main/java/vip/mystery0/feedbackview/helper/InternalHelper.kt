@@ -9,7 +9,6 @@ import vip.mystery0.feedbackview.thread.DownloadHandler
 import vip.mystery0.feedbackview.thread.UploadHandler
 
 object InternalHelper {
-    private val TAG = "InternalHelper"
     private var uploadThread: HandlerThread? = null
     private var downloadThread: HandlerThread? = null
     var uploadHandler: UploadHandler? = null
@@ -41,7 +40,7 @@ object InternalHelper {
             }
         }
         message.state = true
-        FeedbackViewHelper.instance.update(uploadInfo.key, message, true)
+        FeedbackViewHelper.instance.update(message)
     }
 
     fun downloadFileDone(downloadInfo: DownloadInfo) {
@@ -57,7 +56,7 @@ object InternalHelper {
             }
         }
         message.state = true
-        FeedbackViewHelper.instance.update(downloadInfo.key, message, true)
+        FeedbackViewHelper.instance.update(message)
     }
 
     fun close() {
