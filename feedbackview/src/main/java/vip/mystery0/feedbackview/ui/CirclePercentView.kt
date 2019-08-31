@@ -34,7 +34,7 @@ class CirclePercentView : View {
         circlePaint.isAntiAlias = true
         circlePaint.color = Color.WHITE
         circlePaint.style = Paint.Style.STROKE
-        circlePaint.strokeWidth = 5F
+        circlePaint.strokeWidth = 2F
         sectorPaint.isAntiAlias = true
         sectorPaint.color = Color.WHITE
         sectorPaint.style = Paint.Style.FILL
