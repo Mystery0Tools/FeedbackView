@@ -81,12 +81,20 @@ class FeedbackViewHelper private constructor() {
     }
 
     fun updateProgress(uploadInfo: UploadInfo) {
-        val message = uploadInfo.imageMessage
+        val message = uploadInfo.baseMessage
+        when (message) {
+            is ImageMessage -> message.progress = uploadInfo.progress
+            is FileMessage -> message.progress = uploadInfo.progress
+        }
         update(uploadInfo.key, message, false)
     }
 
     fun updateProgress(downloadInfo: DownloadInfo) {
-        val message = downloadInfo.imageMessage
+        val message = downloadInfo.baseMessage
+        when (message) {
+            is ImageMessage -> message.progress = downloadInfo.progress
+            is FileMessage -> message.progress = downloadInfo.progress
+        }
         update(downloadInfo.key, message, false)
     }
 

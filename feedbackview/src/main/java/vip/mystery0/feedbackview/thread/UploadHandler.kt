@@ -23,7 +23,7 @@ class UploadHandler(looper: Looper) : Handler(looper) {
             info.remoteUrl = url
         } catch (e: Exception) {
             e.printStackTrace()
-            info.error = e.message
+            info.baseMessage.error = e.message
         }
         InternalHelper.uploadFileDone(info)
     }

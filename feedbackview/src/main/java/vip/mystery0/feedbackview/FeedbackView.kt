@@ -47,6 +47,7 @@ class FeedbackView : LinearLayout {
                         1 -> FeedbackViewHelper.instance.doSelectListener?.selectFile()
                     }
                 }
+                .show()
         }
         sendButton.setOnClickListener {
             doSend()

@@ -70,11 +70,11 @@ class FeedbackActivity : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.addCategory(Intent.CATEGORY_OPENABLE)
                 intent.type = "*/*"
-                startActivityForResult(intent, IMAGE_SELECT_CODE)
+                startActivityForResult(intent, FILE_SELECT_CODE)
             }
         }
         feedbackView.onSendListener {
-            val key = Calendar.getInstance().time.toString().sha256()
+            val key = Calendar.getInstance().timeInMillis.toString().sha256()
             val message = TextMessage.send(it)
             MessageViewModel.addMessage.postValue(Pair3(key, message, true))
             FeedbackViewHelper.instance.messageSendListener?.onSend(key, message)

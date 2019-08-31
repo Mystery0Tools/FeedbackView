@@ -1,8 +1,9 @@
 package vip.mystery0.feedbackview.helper
 
 import android.os.HandlerThread
-import android.util.Log
 import vip.mystery0.feedbackview.model.DownloadInfo
+import vip.mystery0.feedbackview.model.FileMessage
+import vip.mystery0.feedbackview.model.ImageMessage
 import vip.mystery0.feedbackview.model.UploadInfo
 import vip.mystery0.feedbackview.thread.DownloadHandler
 import vip.mystery0.feedbackview.thread.UploadHandler
@@ -28,17 +29,33 @@ object InternalHelper {
     }
 
     fun uploadFileDone(uploadInfo: UploadInfo) {
-        val message = uploadInfo.imageMessage
-        message.imageUrl = uploadInfo.remoteUrl
-        message.progress = 100
+        val message = uploadInfo.baseMessage
+        when (message) {
+            is ImageMessage -> {
+                message.imageUrl = uploadInfo.remoteUrl
+                message.progress = 100
+            }
+            is FileMessage -> {
+                message.fileUrl = uploadInfo.remoteUrl
+                message.progress = 100
+            }
+        }
         message.state = true
         FeedbackViewHelper.instance.update(uploadInfo.key, message, true)
     }
 
     fun downloadFileDone(downloadInfo: DownloadInfo) {
-        val message = downloadInfo.imageMessage
-        message.localFile = downloadInfo.localFile
-        message.progress = 100
+        val message = downloadInfo.baseMessage
+        when (message) {
+            is ImageMessage -> {
+                message.localFile = downloadInfo.localFile
+                message.progress = 100
+            }
+            is FileMessage -> {
+                message.localFile = downloadInfo.localFile
+                message.progress = 100
+            }
+        }
         message.state = true
         FeedbackViewHelper.instance.update(downloadInfo.key, message, true)
     }
