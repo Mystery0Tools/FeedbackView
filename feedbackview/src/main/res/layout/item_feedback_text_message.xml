@@ -32,7 +32,7 @@
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
                     android:background="@drawable/drawable_shape_corner"
-                    android:backgroundTint="#673AB7"
+                    android:backgroundTint="@color/receiveColor"
                     android:textColor="@android:color/white"
                     android:text="@{textMessage.text}"/>
 
@@ -69,7 +69,7 @@
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
                     android:background="@drawable/drawable_shape_corner"
-                    android:backgroundTint="#FF9800"
+                    android:backgroundTint="@color/sendColor"
                     android:textColor="@android:color/white"
                     android:text="@{textMessage.text}"/>
 

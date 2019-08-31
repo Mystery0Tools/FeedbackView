@@ -23,7 +23,7 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:background="@drawable/drawable_shape_oval"
-                android:backgroundTint="#747474"
+                android:backgroundTint="@color/systemColor"
                 android:textColor="@android:color/white"
                 android:text="@{systemMessage.text}"/>
     </FrameLayout>

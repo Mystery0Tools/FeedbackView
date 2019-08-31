@@ -14,7 +14,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="start"
                 android:background="@drawable/drawable_shape_corner"
-                android:backgroundTint="#673AB7"
+                android:backgroundTint="@color/receiveColor"
                 android:padding="4dp">
 
             <ProgressBar
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/drawable_shape_corner"
-                android:backgroundTint="#FF9800"
+                android:backgroundTint="@color/sendColor"
                 android:padding="4dp">
 
             <ProgressBar
