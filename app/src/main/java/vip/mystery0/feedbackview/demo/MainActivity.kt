@@ -33,14 +33,15 @@ class MainActivity : AppCompatActivity() {
         }
         FeedbackViewHelper.instance.doUploadListener = object : DoUploadListener {
             override fun doUpload(file: File, info: UploadInfo): String {
-                var progres = 0
-                while (progres < 100) {
-                    info.imageMessage.progress = progres
+//                throw Exception("error")
+                var progress = 0
+                while (progress < 80) {
+                    info.progress = progress
                     FeedbackViewHelper.instance.updateProgress(info)
                     Thread.sleep(500)
-                    progres += 10
+                    progress += 10
                 }
-                Thread.sleep(100)
+                Thread.sleep(500)
                 return "https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiC_YG7n_rjAhWEQN4KHcvoCWsQjRx6BAgBEAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FTerra_Ceia%2C_Florida&psig=AOvVaw3_1EWy9eqOmFeEr1tx23bX&ust=1565593243377080"
             }
         }
