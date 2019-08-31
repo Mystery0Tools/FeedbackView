@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="receiveColor">#673AB7</color>
+    <color name="sendColor">#FF9800</color>
+    <color name="systemColor">#747474</color>
+    <color name="progressColor">#3D000000</color>
+</resources>
