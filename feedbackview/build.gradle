@@ -30,16 +30,25 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta03'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     //Tools
     implementation 'vip.mystery0.tools:tools:2.0.4'
     //Event bus
     implementation 'com.jeremyliao:live-event-bus-x:1.5.0'
+    //Coil
+    implementation("io.coil-kt:coil:0.6.1")
+    implementation("io.coil-kt:coil-base:0.6.1")
+    implementation("io.coil-kt:coil-gif:0.6.1")
 }
 
 // 在底部加上这句
