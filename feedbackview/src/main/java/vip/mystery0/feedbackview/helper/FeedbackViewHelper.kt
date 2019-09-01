@@ -1,5 +1,6 @@
 package vip.mystery0.feedbackview.helper
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -26,6 +27,7 @@ class FeedbackViewHelper private constructor() {
     var doSelectListener: DoSelectListener? = null
 
     companion object {
+        const val INTENT_FEED_BACK_ACTIVITY = 111
         val instance by lazy { FeedbackViewHelper() }
 
         fun init(context: Context) {
@@ -34,10 +36,10 @@ class FeedbackViewHelper private constructor() {
         }
     }
 
-    fun start() {
+    fun start(activity: Activity) {
         InternalHelper.prepare()
-        val intent = Intent(context, FeedbackActivity::class.java)
-        context?.startActivity(intent)
+        val intent = Intent(activity, FeedbackActivity::class.java)
+        activity.startActivityForResult(intent, INTENT_FEED_BACK_ACTIVITY)
     }
 
     fun add(baseMessage: BaseMessage, clearInput: Boolean = false) {

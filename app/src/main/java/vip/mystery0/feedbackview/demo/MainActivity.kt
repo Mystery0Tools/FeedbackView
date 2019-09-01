@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         button.setOnClickListener {
-            FeedbackViewHelper.instance.start()
+            FeedbackViewHelper.instance.start(this)
             start()
         }
     }
