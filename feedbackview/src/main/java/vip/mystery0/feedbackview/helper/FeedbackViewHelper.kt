@@ -3,6 +3,7 @@ package vip.mystery0.feedbackview.helper
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.OpenableColumns
 import vip.mystery0.feedbackview.listener.DoDownloadListener
 import vip.mystery0.feedbackview.listener.DoSelectListener
 import vip.mystery0.feedbackview.listener.DoUploadListener
@@ -11,6 +12,7 @@ import vip.mystery0.feedbackview.model.*
 import vip.mystery0.feedbackview.ui.activity.FeedbackActivity
 import vip.mystery0.feedbackview.ui.activity.postAdd
 import vip.mystery0.feedbackview.ui.activity.postUpdate
+import vip.mystery0.feedbackview.utils.getLocalFileFromUri
 import vip.mystery0.tools.ToolsClient
 import vip.mystery0.tools.utils.FileTools
 
@@ -40,9 +42,15 @@ class FeedbackViewHelper private constructor() {
 
     fun add(baseMessage: BaseMessage, clearInput: Boolean = false) {
         EventBusMessageBean(baseMessage, clearInput).postAdd()
-        if (baseMessage is ImageMessage) {
-            when (baseMessage.messageType) {
+        when (baseMessage) {
+            is ImageMessage -> when (baseMessage.messageType) {
                 MessageType.RECEIVE -> InternalHelper.downloadHandler!!.addDownloadInfo(DownloadInfo(baseMessage, baseMessage.imageUrl!!))
+                MessageType.SEND -> InternalHelper.uploadHandler!!.addUploadInfo((UploadInfo(baseMessage, baseMessage.localFile!!)))
+                else -> {
+                }
+            }
+            is FileMessage -> when (baseMessage.messageType) {
+                MessageType.RECEIVE -> InternalHelper.downloadHandler!!.addDownloadInfo(DownloadInfo(baseMessage, baseMessage.fileUrl!!))
                 MessageType.SEND -> InternalHelper.uploadHandler!!.addUploadInfo((UploadInfo(baseMessage, baseMessage.localFile!!)))
                 else -> {
                 }
@@ -58,7 +66,7 @@ class FeedbackViewHelper private constructor() {
      * 自定义图片选择的Uri接收
      */
     fun receiveImageUri(uri: Uri) {
-        val file = ImageMessage.getLocalFileFromUri(uri)
+        val file = uri.getLocalFileFromUri()
         FileTools.instance.cloneUriToFile(context!!, uri, file)
         val imageMessage = ImageMessage(MessageType.SEND, false)
         imageMessage.localFile = file
@@ -69,9 +77,18 @@ class FeedbackViewHelper private constructor() {
      * 自定义文件选择的Uri接收
      */
     fun receiveFileUri(uri: Uri) {
-        val file = ImageMessage.getLocalFileFromUri(uri)
+        val file = uri.getLocalFileFromUri()
         FileTools.instance.cloneUriToFile(context!!, uri, file)
         val fileMessage = FileMessage(MessageType.SEND, false)
+        uri.let { returnUri ->
+            context!!.contentResolver.query(returnUri, null, null, null, null)
+        }?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+            cursor.moveToFirst()
+            fileMessage.fileTitle = cursor.getString(nameIndex)
+            fileMessage.fileSize = cursor.getLong(sizeIndex)
+        }
         fileMessage.localFile = file
         add(fileMessage)
     }

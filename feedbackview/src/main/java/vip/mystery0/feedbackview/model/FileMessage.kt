@@ -6,4 +6,6 @@ class FileMessage(type: MessageType, state: Boolean) : BaseMessage(type, Type.FI
     var localFile: File? = null
     var fileUrl: String? = null
     var progress: Int = 0
+    var fileTitle: String? = null
+    var fileSize = 0L
 }
