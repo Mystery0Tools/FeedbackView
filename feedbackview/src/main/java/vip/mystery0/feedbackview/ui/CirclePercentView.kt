@@ -2,18 +2,15 @@ package vip.mystery0.feedbackview.ui
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import vip.mystery0.feedbackview.R
 import vip.mystery0.tools.getTColor
-import kotlin.math.roundToInt
-
 
 class CirclePercentView : View {
     private var progress = 0
-    private var radius = 48F
+    private var radius = 0
     //圆心坐标
     private var centerX = 0F
     private var centerY = 0F
@@ -25,20 +22,37 @@ class CirclePercentView : View {
 
     private val circlePaint = Paint()
     private val sectorPaint = Paint()
+    private val backgroundPaint = Paint()
+
+    private var drawBackground = true
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        initStyle(context, attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        initStyle(context, attrs)
+    }
 
     init {
         circlePaint.isAntiAlias = true
-        circlePaint.color = Color.WHITE
+        circlePaint.color = context.getTColor(R.color.progressColor)
         circlePaint.style = Paint.Style.STROKE
         circlePaint.strokeWidth = 2F
         sectorPaint.isAntiAlias = true
-        sectorPaint.color = Color.WHITE
+        sectorPaint.color = context.getTColor(R.color.progressColor)
         sectorPaint.style = Paint.Style.FILL
-        setBackgroundColor(context.getTColor(R.color.progressColor))
+        backgroundPaint.isAntiAlias = true
+        backgroundPaint.color = context.getTColor(R.color.backgroundColor)
+        backgroundPaint.style = Paint.Style.FILL
+    }
+
+    private fun initStyle(context: Context, attrs: AttributeSet) {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CirclePercentView)
+        radius = typedArray.getDimensionPixelSize(R.styleable.CirclePercentView_radius, 36)
+        drawBackground = typedArray.getBoolean(R.styleable.CirclePercentView_drawBackground, true)
+        typedArray.recycle()
     }
 
     fun updateProgress(progress: Int) {
@@ -64,19 +78,24 @@ class CirclePercentView : View {
             mHeight = heightSize
         }
         if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
-            mWidth = (radius * 2).roundToInt()
-            mHeight = (radius * 2).roundToInt()
-            centerX = radius
-            centerY = radius
+            mWidth = radius * 2
+            mHeight = radius * 2
+            centerX = radius.toFloat()
+            centerY = radius.toFloat()
         }
         setMeasuredDimension(mWidth, mHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
         mEndAngle = progress * 3.6F
-        canvas.drawCircle(centerX, centerY, radius + 20, circlePaint)
-        canvas.drawCircle(centerX, centerY, radius + 10, circlePaint)
+        if (drawBackground)
+            canvas.drawColor(context.getTColor(R.color.backgroundColor))
+        else
+            canvas.drawCircle(centerX, centerY, radius + 30F, backgroundPaint)
+        canvas.drawCircle(centerX, centerY, radius + 20F, circlePaint)
+        canvas.drawCircle(centerX, centerY, radius + 10F, circlePaint)
         //绘制圆环
         canvas.drawArc(centerX - radius, centerY - radius, centerX + radius, centerY + radius, 270F, mEndAngle, true, sectorPaint)
+        //绘制背景
     }
 }
