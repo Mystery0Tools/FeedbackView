@@ -8,11 +8,15 @@ abstract class BaseMessage(
     val messageType: MessageType,
     val type: Type,
     var state: Boolean,
-    val time: Long = Calendar.getInstance().timeInMillis
+    var time: Long = Calendar.getInstance().timeInMillis
 ) : Serializable {
-    val id = time.toString().sha1()
+    var id = time.toString().sha1()
     var extraData: Any? = null
     var error: String? = null
+
+    fun generateId() {
+        id = time.toString().sha1()
+    }
 
     open fun copyFrom(baseMessage: BaseMessage) {
         this.state = baseMessage.state
